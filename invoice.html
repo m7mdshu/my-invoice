@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Invoices Dashboard</title>
+<style>
+  :root{
+    --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --border:#e2e8f0; --shadow:0 6px 18px rgba(0,0,0,.08);
+    --blue:#2563eb; --blue-100:#dbeafe; --green:#16a34a; --green-100:#dcfce7; --red:#dc2626; --red-100:#fee2e2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial}
+  h1{margin:24px 16px;text-align:center}
+  .table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin:16px}
+  table{width:100%;border-collapse:collapse}
+  thead th{background:#f1f5f9;font-weight:700;padding:8px;border-bottom:1px solid var(--border);text-align:center;font-size:14px}
+  tbody td{padding:6px;border-bottom:1px solid var(--border);text-align:center;font-size:13px; height:32px}
+  tbody tr:hover{background:#f9fafb}
+  .inputs td{background:#f8fafc}
+  input,select{width:100%;padding:3px 10px;border:1px solid var(--border);border-radius:8px;background:#f8fafc;color:var(--text);text-align:center;outline:none}
+  input:focus,select:focus{border-color:#cbd5e1;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .btn{padding:4px 8px; font-size:12px;border:0;border-radius:8px;background:linear-gradient(90deg,#3b82f6,#2563eb);color:#fff;font-weight:700;cursor:pointer;transition:transform .08s,opacity .2s;white-space:nowrap}
+  .btn:hover{opacity:.92}
+  .btn:active{transform:translateY(1px)}
+  .btn-danger{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--border);background:#fff}
+  .toolbar input,.toolbar select{width:auto;min-width:180px}
+  .toolbar .spacer{flex:1}
+  .chip{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+  
+  
+  
+  .badge{display:inline-block;padding:6px 10px;border-radius:10px;font-weight:700;font-size:12px}
+  .type-Etimad{background:#ecfeff;color:#0891b2}
+  .type-Oracle{background:#eef2ff;color:#4f46e5}
+  .type-NUPCO{background:#f0fdf4;color:#15803d}
+  .type-MarketPlace{background:#fff7ed;color:#c2410c}
+  .type-Cash{background:#f5f3ff;color:#6d28d9}
+  .action-btn{display:inline-flex;gap:6px;justify-content:center}
+
+.file-input {
+  display: none;
+}
+.file-label {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #6b7280; /* gray */
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .08s,opacity .2s;
+  white-space: nowrap;
+  display: inline-block;
+  text-align: center;
+}
+.file-label:hover { opacity:.92; }
+.file-label:active { transform:translateY(1px); }
+
+
+.file-input {
+  display: none;
+}
+
+
+
+.attach-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #6b7280; /* رمادي متوسط */
+  transition: color .2s;
+}
+.attach-icon:hover {
+  color: #374151; /* رمادي أغمق */
+}
+
+
+.file-input-full {
+  opacity: 0;          /* مخفي لكنه قابل للنقر */
+  width: 100%;
+  height: 30px;        /* يغطي مساحة الخانة */
+  cursor: pointer;
+}
+.doc-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #6b7280;
+  transition: color .2s;
+}
+.doc-icon:hover {
+  color: #374151;
+}
+
+
+
+
+
+.action-btn {
+  display: inline-flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+tbody td {
+  padding: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  height: 34px;
+  vertical-align: middle;
+}
+
+
+
+.badge,
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 8px;
+  font-size: 11px;
+  border-radius: 4px; /* مستطيل بزوايا خفيفة */
+}
+
+.doc-icon,
+.attach-icon {
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+}
+
+
+
+#invoiceTable td.hospital-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  cursor: help;
+}
+
+
+#invoiceTable input,
+#invoiceTable select {
+  height: 24px;
+  padding: 2px 6px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+
+#invoiceTable input,
+#invoiceTable select {
+  height: 22px;
+  padding: 1px 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+
+#invoiceTable input,
+#invoiceTable select {
+  height: 20px;
+  padding: 0 4px;
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+
+#invoiceTable input,
+#invoiceTable select {
+  height: 18px;
+  padding: 0 3px;
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+
+#invoiceTable input,
+#invoiceTable select {
+  height: 16px;
+  padding: 0 2px;
+  font-size: 10px;
+  box-sizing: border-box;
+}
+
+
+
+#addBtn {
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#3b82f6,#2563eb);
+  color: #fff;
+  font-weight: 700;
+}
+
+
+
+
+
+
+#INV_Type {
+  width: 100px;
+}
+
+#Hospital_Name {
+  width: 200px;
+}
+
+
+/* أزرار */
+button, .btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+button:hover, .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  opacity: 0.95;
+}
+
+/* الحقول */
+input, select, textarea {
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #4facfe !important;
+  box-shadow: 0 0 6px rgba(79,172,254,0.5);
+  outline: none;
+}
+
+/* الجدول */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+tr {
+  transition: background 0.2s ease;
+}
+
+tr:hover td {
+  background-color: #f1faff !important;
+}
+
+/* أنيميشن عند إضافة صف جديد */
+tr.new-row {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* حركة اخفاء الصف */
+tr.fade-out {
+  animation: fadeOutRow 0.5s forwards;
+}
+@keyframes fadeOutRow {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+    height: 0;
+  }
+}
+
+/* حركة اظهار الصف */
+tr.fade-in {
+  animation: fadeInRow 0.5s ease forwards;
+}
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+.btn-attach {
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#9ca3af,#6b7280); /* رمادي متدرج */
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.btn-attach.completed {
+  background: #16a34a; /* أخضر */
+}
+
+.btn-attach:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  opacity: 0.95;
+}
+
+.btn-attach:active {
+  transform: translateY(1px);
+}
+
+
+#uploadProgress {
+  display: none;
+  margin-top: 4px;
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 6px;
+  height: 6px;
+  overflow: hidden;
+}
+
+#uploadBar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg,#3b82f6,#2563eb); /* أزرق متدرج */
+  border-radius: 6px;
+  transition: width 0.2s ease, background 0.3s ease;
+}
+
+#uploadProgress.fade-out {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; height: 0; margin-top: 0; }
+}
+
+
+#invoiceTable td a {
+  text-decoration: none;
+}
+#invoiceTable td a:hover {
+  opacity: 0.7;
+}
+
+
+#invoiceTable td.action-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 16px;
+}
+.header .logo {
+  height: 100px;
+}
+.header h1 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 24px;
+}
+
+
+  
+
+
+  .chip.completed {
+    background: #dbeafe; /* أزرق فاتح */
+    color: #2563eb;      /* أزرق */
+  }
+
+  .chip.paid {
+    background: #dcfce7; /* أخضر فاتح */
+    color: #16a34a;      /* أخضر */
+  }
+
+  .chip.pending {
+    background: #fef9c3; /* أصفر فاتح */
+    color: #dc2626;      /* أحمر */
+  }
+
+  .chip.rejected {
+    background: #fecaca; /* أحمر فاتح */
+    color: #000000;      /* أسود */
+  }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="img/logo.avif" alt="Logo" class="logo">
+  <h1></h1><!-- عنوان وسط الصفحة -->
+</div>
+
+<!-- Create Invoice -->
+<div class="table-card">
+  <table>
+    <thead>
+      <tr>
+        <th>INV No.</th><th>INV Date</th><th>POs No.</th><th>INV Type</th>
+        <th>Hospital Name</th><th>Value</th><th>Document</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="inputs">
+        <td><input id="INV_No" type="number"></td>
+        <td><input id="INV_Date" type="text"></td>
+        <td><input id="POs_No" type="number"></td>
+        <td>
+          <select id="INV_Type">
+            <option value="" selected disabled hidden></option>
+            <option value="Etimad">Etimad</option>
+            <option value="Oracle">Oracle</option>
+            <option value="NUPCO">NUPCO</option>
+            <option value="Market Place">Market Place</option>
+            <option value="Cash">Cash</option>
+          </select>
+        </td>
+        <td>
+<select id="Hospital_Name">
+  <option value="" selected disabled hidden></option>
+  <option value="Al-Majd Al-Fareed">Al-Majd Al-Fareed</option>
+  <option value="Armed Forces in Dhahran">Armed Forces in Dhahran</option>
+  <option value="Armed Forces in Jeddah">Armed Forces in Jeddah</option>
+  <option value="Armed Forces in Khamis Mushait">Armed Forces in Khamis Mushait</option>
+  <option value="Armed Forces in Riyadh">Armed Forces in Riyadh</option>
+  <option value="Armed Forces in Tabuk">Armed Forces in Tabuk</option>
+  <option value="Armed Forces in Al Hada">Armed Forces in Al Hada</option>
+  <option value="Health Affairs in Najran">Health Affairs in Najran</option>
+  <option value="Jubail General Hospital">Jubail General Hospital</option>
+  <option value="King Abdullah Medical City">King Abdullah Medical City</option>
+  <option value="King Fahad Medical City">King Fahad Medical City</option>
+  <option value="King Fahad Military Medical Complex in Dhahran">King Fahad Military Medical Complex in Dhahran</option>
+  <option value="King Faisal Specialist Hospital in Dammam">King Faisal Specialist Hospital in Dammam</option>
+  <option value="King Faisal Specialist Hospital in Jeddah">King Faisal Specialist Hospital in Jeddah</option>
+  <option value="King Faisal Specialist Hospital in Madinah">King Faisal Specialist Hospital in Madinah</option>
+  <option value="King Faisal Specialist Hospital in Riyadh">King Faisal Specialist Hospital in Riyadh</option>
+  <option value="King Salman Hospital in Madinah">King Salman Hospital in Madinah</option>
+  <option value="King Saud University in Riyadh">King Saud University in Riyadh</option>
+  <option value="Medical Al-mudawat Company">Medical Al-mudawat Company</option>
+  <option value="Ministry of Defense in Jeddah">Ministry of Defense in Jeddah</option>
+  <option value="Ministry of Defense in Jubail">Ministry of Defense in Jubail</option>
+  <option value="Ministry of Defense in Sharurah">Ministry of Defense in Sharurah</option>
+  <option value="Ministry of Defense in Taif">Ministry of Defense in Taif</option>
+  <option value="MOH in Aseer Health Directorate">MOH in Aseer Health Directorate</option>
+  <option value="MOH in Jazan Health Directorate">MOH in Jazan Health Directorate</option>
+  <option value="MOH in Khamis Mushait Health Directorate">MOH in Khamis Mushait Health Directorate</option>
+  <option value="MOH in Najran Health Directorate">MOH in Najran Health Directorate</option>
+  <option value="MOH in Qassim Health Directorate">MOH in Qassim Health Directorate</option>
+  <option value="National Guard in Al-Ahsa">National Guard in Al-Ahsa</option>
+  <option value="National Guard in Dammam">National Guard in Dammam</option>
+  <option value="National Guard in Jeddah">National Guard in Jeddah</option>
+  <option value="National Guard in Madinah">National Guard in Madinah</option>
+  <option value="National Guard in Riyadh">National Guard in Riyadh</option>
+  <option value="National Guard in Taif">National Guard in Taif</option>
+  <option value="Prince Mohammed Hospital in Riyadh">Prince Mohammed Hospital in Riyadh</option>
+  <option value="Second Health Cluster in Riyadh">Second Health Cluster in Riyadh</option>
+  <option value="Security Forces Hospital in Mecca">Security Forces Hospital in Mecca</option>
+  <option value="Security Forces Hospital in Riyadh">Security Forces Hospital in Riyadh</option>
+  <option value="University Medical City in Riyadh">University Medical City in Riyadh</option>
+</select>
+</td>
+        <td><input id="Value" type="number" step="0.01"></td>
+        <td>
+  
+  <input type="file" id="Attachment" style="display:none">
+  <label for="Attachment" class="btn-attach">Attach</label>
+  <div id="uploadProgress" style="display:none; margin-top:4px; width:100%; background:#e5e7eb; border-radius:6px; height:6px;">
+    <div id="uploadBar" style="height:100%; width:0; background:#2563eb; border-radius:6px;"></div>
+  </div>
+  
+
+</td>
+        <td><button class="btn" id="addBtn"> Add</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Invoices List -->
+<div class="table-card" id="listCard">
+  <div class="toolbar">
+    <input type="text" id="searchBox" placeholder="Search...">
+    <select id="filterStatus">
+      <option value="">All Status</option>
+      <option value="Completed">Completed</option>
+      <option value="Paid">Paid</option>
+      <option value="Pending">Pending</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+    <select id="filterType">
+      <option value="">All Types</option>
+      <option value="Etimad">Etimad</option>
+      <option value="Oracle">Oracle</option>
+      <option value="NUPCO">NUPCO</option>
+      <option value="Market Place">Market Place</option>
+      <option value="Cash">Cash</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="btn" id="exportBtn">Export Excel</button>
+    <button class="btn" id="backupBtn" style="background:#9ca3af;">Backup</button>
+    <label for="restoreInput" class="btn" style="background:#9ca3af; cursor:pointer;">Restore</label>
+    <input type="file" id="restoreInput" accept=".json" style="display:none">
+  <button class="btn" id="printBtn" title="Print">🖨</button>
+  </div>
+  <table id="invoiceTable">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>INV No.</th>
+        <th>INV Date</th>
+        <th>POs No.</th>
+        <th>INV Type</th>
+        <th>Hospital Name</th>
+        <th>Value</th>
+        <th>Status</th>
+        <th>Request No.</th>
+        <th>Comments</th>
+        
+        <th>Documents</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  const STORAGE_KEY = 'invoices_editable_v4';
+  let rows = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  let editId = null;
+
+  if (rows.some(r => r.id === undefined)) {
+    rows = rows.map((r,i)=>({...r, id: r.id ?? (Date.now()+i)}));
+    save();
+  }
+
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(rows)); }
+  function toMoney(v){
+    const n = Number(String(v).replace(/,/g,''));
+    if (isNaN(n)) return '';
+    return n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function typeClass(t){
+    const k = (t||'').toLowerCase();
+    if (k==='etimad') return 'type-Etimad';
+    if (k==='oracle') return 'type-Oracle';
+    if (k==='nupco') return 'type-NUPCO';
+    if (k==='market place') return 'type-MarketPlace';
+    if (k==='cash') return 'type-Cash';
+    return '';
+  }
+  function chipStatus(s){
+    const k=(s||'').toLowerCase();
+    let cls = '';
+  if(k==='pending') cls = 'pending';
+  else if(k==='completed') cls = 'completed';
+  else if(k==='paid') cls = 'paid';
+  else if(k==='rejected') cls = 'rejected';
+    return `<span class="chip ${cls}">${s||''}</span>`;
+  }
+
+  const searchBox = document.getElementById('searchBox');
+  const filterStatus = document.getElementById('filterStatus');
+  const filterType = document.getElementById('filterType');
+  searchBox.addEventListener('input', render);
+  filterStatus.addEventListener('change', render);
+  filterType.addEventListener('change', render);
+
+  function getFiltered(){
+    const q = searchBox.value.trim().toLowerCase();
+    const fs = filterStatus.value;
+    const ft = filterType.value;
+    return rows.filter(r=>{
+      const okS = !fs || (r.Status||'')===fs;
+      const okT = !ft || (r.INV_Type||'')===ft;
+      const text = [
+        r.INV_No,r.INV_Date,r.POs_No,r.INV_Type,r.Hospital_Name,
+        r.Value != null ? String(r.Value) : '',
+        r.Status,r.Request_No,r.Comments,r.Delivery_by,r.Documents
+      ].join(' ').toLowerCase();
+      const okQ = !q || text.includes(q);
+      return okS && okT && okQ;
+    });
+  }
+
+  function render(){
+    const tbody = document.querySelector('#invoiceTable tbody');
+    tbody.innerHTML = '';
+    const list = getFiltered();
+
+    list.forEach((r,idx)=>{
+      const tr = document.createElement('tr');
+      const isEditing = editId === r.id;
+
+      tr.innerHTML += `<td>${idx+1}</td>`;
+
+      if (!isEditing){
+        tr.innerHTML += `<td>${r.INV_No||''}</td>`;
+        tr.innerHTML += `<td>${r.INV_Date||''}</td>`;
+        tr.innerHTML += `<td>${r.POs_No||''}</td>`;
+        tr.innerHTML += `<td><span class="badge ${typeClass(r.INV_Type)}">${r.INV_Type||''}</span></td>`;
+        tr.innerHTML += `<td class="hospital-name" title="${r.Hospital_Name||''}">${r.Hospital_Name||''}</td>`;
+        tr.innerHTML += `<td>${r.ValueFormatted || (r.Value!=null?toMoney(r.Value):'')}</td>`;
+        tr.innerHTML += `<td>${chipStatus(r.Status)}</td>`;
+        tr.innerHTML += `<td>${r.Request_No||''}</td>`;
+        tr.innerHTML += `<td>${r.Comments||''}</td>`;
+        
+        tr.innerHTML += `<td>${r.Documents||''}</td>`;
+        tr.innerHTML += `<td class="action-btn">
+            <button class="btn" onclick="startEdit(${r.id})">Edit</button>
+            <button class="btn btn-danger" onclick="removeRow(${r.id})">Delete</button>
+          </td>`;
+      } else {
+        tr.innerHTML += `<td><input type="number" value="${escapeVal(r.INV_No)}" id="e_INV_No_${r.id}"></td>`;
+        tr.innerHTML += `<td><input type="date" value="${escapeVal(r.INV_Date)}" id="e_INV_Date_${r.id}"></td>`;
+        tr.innerHTML += `<td><input type="number" value="${escapeVal(r.POs_No)}" id="e_POs_No_${r.id}"></td>`;
+        tr.innerHTML += `<td>
+            <select id="e_INV_Type_${r.id}">
+              ${opt('Etimad', r.INV_Type)}
+              ${opt('Oracle', r.INV_Type)}
+              ${opt('NUPCO', r.INV_Type)}
+              ${opt('Market Place', r.INV_Type)}
+              ${opt('Cash', r.INV_Type)}
+            </select>
+          </td>`;
+        tr.innerHTML += `<td>
+  <select id="e_Hospital_Name_${r.id}">
+    ${opt("Al-Majd Al-Fareed", r.Hospital_Name)}
+    ${opt("Armed Forces in Dhahran", r.Hospital_Name)}
+    ${opt("Armed Forces in Jeddah", r.Hospital_Name)}
+    ${opt("Armed Forces in Khamis Mushait", r.Hospital_Name)}
+    ${opt("Armed Forces in Riyadh", r.Hospital_Name)}
+    ${opt("Armed Forces in Tabuk", r.Hospital_Name)}
+    ${opt("Armed Forces in Al Hada", r.Hospital_Name)}
+    ${opt("Health Affairs in Najran", r.Hospital_Name)}
+    ${opt("Jubail General Hospital", r.Hospital_Name)}
+    ${opt("King Abdullah Medical City", r.Hospital_Name)}
+    ${opt("King Fahad Medical City", r.Hospital_Name)}
+    ${opt("King Fahad Military Medical Complex in Dhahran", r.Hospital_Name)}
+    ${opt("King Faisal Specialist Hospital in Dammam", r.Hospital_Name)}
+    ${opt("King Faisal Specialist Hospital in Jeddah", r.Hospital_Name)}
+    ${opt("King Faisal Specialist Hospital in Madinah", r.Hospital_Name)}
+    ${opt("King Faisal Specialist Hospital in Riyadh", r.Hospital_Name)}
+    ${opt("King Salman Hospital in Madinah", r.Hospital_Name)}
+    ${opt("King Saud University in Riyadh", r.Hospital_Name)}
+    ${opt("Medical Al-mudawat Company", r.Hospital_Name)}
+    ${opt("Ministry of Defense in Jeddah", r.Hospital_Name)}
+    ${opt("Ministry of Defense in Jubail", r.Hospital_Name)}
+    ${opt("Ministry of Defense in Sharurah", r.Hospital_Name)}
+    ${opt("Ministry of Defense in Taif", r.Hospital_Name)}
+    ${opt("MOH in Aseer Health Directorate", r.Hospital_Name)}
+    ${opt("MOH in Jazan Health Directorate", r.Hospital_Name)}
+    ${opt("MOH in Khamis Mushait Health Directorate", r.Hospital_Name)}
+    ${opt("MOH in Najran Health Directorate", r.Hospital_Name)}
+    ${opt("MOH in Qassim Health Directorate", r.Hospital_Name)}
+    ${opt("National Guard in Al-Ahsa", r.Hospital_Name)}
+    ${opt("National Guard in Dammam", r.Hospital_Name)}
+    ${opt("National Guard in Jeddah", r.Hospital_Name)}
+    ${opt("National Guard in Madinah", r.Hospital_Name)}
+    ${opt("National Guard in Riyadh", r.Hospital_Name)}
+    ${opt("National Guard in Taif", r.Hospital_Name)}
+    ${opt("Prince Mohammed Hospital in Riyadh", r.Hospital_Name)}
+    ${opt("Second Health Cluster in Riyadh", r.Hospital_Name)}
+    ${opt("Security Forces Hospital in Mecca", r.Hospital_Name)}
+    ${opt("Security Forces Hospital in Riyadh", r.Hospital_Name)}
+    ${opt("University Medical City in Riyadh", r.Hospital_Name)}
+  </select>
+</td>`;
+        tr.innerHTML += `<td><input type="number" step="0.01" value="${r.Value!=null?r.Value:''}" id="e_Value_${r.id}"></td>`;
+        tr.innerHTML += `<td>
+            <select id="e_Status_${r.id}">
+              ${opt('Completed', r.Status)}
+              ${opt('Paid', r.Status)}
+              ${opt('Pending', r.Status)}
+              ${opt('Rejected', r.Status)}
+            </select>
+          </td>`;
+        tr.innerHTML += `<td><input value="${escapeVal(r.Request_No||'')}" id="e_Request_No_${r.id}"></td>`;
+        tr.innerHTML += `<td><input value="${escapeVal(r.Comments||'')}" id="e_Comments_${r.id}"></td>`;
+        
+        tr.innerHTML += `<td>
+  <input type="file" id="e_Documents_${r.id}" class="file-input">
+  <label for="e_Documents_${r.id}" class="btn-attach" id="label_doc_${r.id}">Attach</label>
+  <div id="progress_${r.id}" class="uploadProgress" style="display:none; margin-top:4px; width:100%; background:#e5e7eb; border-radius:6px; height:6px;">
+    <div id="bar_${r.id}" style="height:100%; width:0; background:#2563eb; border-radius:6px;"></div>
+  </div>
+</td>`;
+        tr.innerHTML += `<td class="action-btn">
+            <button class="btn" onclick="saveEdit(${r.id})">Save</button>
+            <button class="btn btn-danger" onclick="cancelEdit()">Cancel</button>
+          </td>`;
+      }
+
+      tbody.appendChild(tr);
+      if(isEditing){ bindEditFileUpload(r.id); }
+    });
+  }
+
+  function escapeVal(v=''){ return String(v).replace(/"/g,'&quot;'); }
+  function opt(val, current){ return `<option value="${val}" ${val===current?'selected':''}>${val}</option>`; }
+
+  function startEdit(id){ editId = id; 
+// attach file upload progress for edit mode
+function bindEditFileUpload(id){
+  const fileInput = document.getElementById(`e_Documents_${id}`);
+  const label = document.getElementById(`label_doc_${id}`);
+  const progressDiv = document.getElementById(`progress_${id}`);
+  const bar = document.getElementById(`bar_${id}`);
+  if(!fileInput || !label || !progressDiv || !bar) return;
+  
+  fileInput.addEventListener('change', ()=>{
+    if(fileInput.files.length > 0){
+      progressDiv.style.display = 'block';
+      progressDiv.classList.remove("fade-out");
+      bar.style.width = '0%';
+      bar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+      label.textContent = "Uploading...";
+      label.classList.remove("completed");
+
+      let progress = 0;
+      const interval = setInterval(()=>{
+        progress += 10;
+        bar.style.width = progress + '%';
+        if(progress >= 100){
+          clearInterval(interval);
+          // أخفي الزر
+          label.style.display = "none";
+          // أخفي شريط التقدم
+          progressDiv.style.display = "none";
+          // أظهر أيقونة 📄 كرابط للملف
+          const file = fileInput.files[0];
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.textContent = "📄";
+          link.style.textDecoration = "none";
+          link.style.marginLeft = "4px";
+          label.parentNode.appendChild(link);
+        }
+      },100);
+    }
+  });
+}
+
+render(); }
+  function cancelEdit(){ editId = null; 
+// attach file upload progress for edit mode
+function bindEditFileUpload(id){
+  const fileInput = document.getElementById(`e_Documents_${id}`);
+  const label = document.getElementById(`label_doc_${id}`);
+  const progressDiv = document.getElementById(`progress_${id}`);
+  const bar = document.getElementById(`bar_${id}`);
+  if(!fileInput || !label || !progressDiv || !bar) return;
+  
+  fileInput.addEventListener('change', ()=>{
+    if(fileInput.files.length > 0){
+      progressDiv.style.display = 'block';
+      progressDiv.classList.remove("fade-out");
+      bar.style.width = '0%';
+      bar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+      label.textContent = "Uploading...";
+      label.classList.remove("completed");
+
+      let progress = 0;
+      const interval = setInterval(()=>{
+        progress += 10;
+        bar.style.width = progress + '%';
+        if(progress >= 100){
+          clearInterval(interval);
+          // أخفي الزر
+          label.style.display = "none";
+          // أخفي شريط التقدم
+          progressDiv.style.display = "none";
+          // أظهر أيقونة 📄 كرابط للملف
+          const file = fileInput.files[0];
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.textContent = "📄";
+          link.style.textDecoration = "none";
+          link.style.marginLeft = "4px";
+          label.parentNode.appendChild(link);
+        }
+      },100);
+    }
+  });
+}
+
+render(); }
+  function saveEdit(id){
+    const i = rows.findIndex(r=>r.id===id);
+    if (i<0) return;
+    const g = (k)=>document.getElementById(`e_${k}_${id}`).value;
+    const valNum = g('Value');
+    const num = valNum===''? null : Number(valNum);
+    
+    let Documents = rows[i].Documents;
+    const fileInput = document.getElementById(`e_Documents_${id}`);
+    if(fileInput && fileInput.files.length > 0){
+      const f = fileInput.files[0];
+      Documents = `<a href="${URL.createObjectURL(f)}" download="${f.name}">📄</a>`;
+    }
+
+    rows[i] = {
+      ...rows[i],
+      INV_No: g('INV_No'),
+      INV_Date: g('INV_Date'),
+      POs_No: g('POs_No'),
+      INV_Type: g('INV_Type'),
+      Hospital_Name: g('Hospital_Name'),
+      Value: num,
+      ValueFormatted: num==null? '' : toMoney(num),
+      Status: g('Status'),
+      Request_No: g('Request_No'),
+      Comments: g('Comments'),
+      
+      Documents
+    };
+    save();
+    editId = null;
+    
+// attach file upload progress for edit mode
+function bindEditFileUpload(id){
+  const fileInput = document.getElementById(`e_Documents_${id}`);
+  const label = document.getElementById(`label_doc_${id}`);
+  const progressDiv = document.getElementById(`progress_${id}`);
+  const bar = document.getElementById(`bar_${id}`);
+  if(!fileInput || !label || !progressDiv || !bar) return;
+  
+  fileInput.addEventListener('change', ()=>{
+    if(fileInput.files.length > 0){
+      progressDiv.style.display = 'block';
+      progressDiv.classList.remove("fade-out");
+      bar.style.width = '0%';
+      bar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+      label.textContent = "Uploading...";
+      label.classList.remove("completed");
+
+      let progress = 0;
+      const interval = setInterval(()=>{
+        progress += 10;
+        bar.style.width = progress + '%';
+        if(progress >= 100){
+          clearInterval(interval);
+          // أخفي الزر
+          label.style.display = "none";
+          // أخفي شريط التقدم
+          progressDiv.style.display = "none";
+          // أظهر أيقونة 📄 كرابط للملف
+          const file = fileInput.files[0];
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.textContent = "📄";
+          link.style.textDecoration = "none";
+          link.style.marginLeft = "4px";
+          label.parentNode.appendChild(link);
+        }
+      },100);
+    }
+  });
+}
+
+render();
+  }
+
+  
+  document.getElementById('addBtn').addEventListener('click', ()=>{
+    const INV_No = document.getElementById('INV_No').value.trim();
+    const INV_Date = document.getElementById('INV_Date').value.trim();
+    const POs_No = document.getElementById('POs_No').value.trim();
+    const INV_Type = document.getElementById('INV_Type').value;
+    const Hospital_Name = document.getElementById('Hospital_Name').value.trim();
+    const ValueInput = document.getElementById('Value').value.trim();
+    const fileInput = document.getElementById('Attachment');
+    let Documents = '';
+    if(fileInput.files.length > 0){
+      const f = fileInput.files[0];
+      Documents = `<a href="${URL.createObjectURL(f)}" download="${f.name}">📄</a>`;
+    }
+    const num = ValueInput===''? null : Number(ValueInput);
+    const row = {
+      id: Date.now(),
+      INV_No, INV_Date, POs_No, INV_Type, Hospital_Name,
+      Value: num, ValueFormatted: num==null? '' : toMoney(num),
+      Status: 'Pending',
+      Request_No:'', Comments:'', Documents
+    };
+    rows.push(row); save(); 
+// attach file upload progress for edit mode
+function bindEditFileUpload(id){
+  const fileInput = document.getElementById(`e_Documents_${id}`);
+  const label = document.getElementById(`label_doc_${id}`);
+  const progressDiv = document.getElementById(`progress_${id}`);
+  const bar = document.getElementById(`bar_${id}`);
+  if(!fileInput || !label || !progressDiv || !bar) return;
+  
+  fileInput.addEventListener('change', ()=>{
+    if(fileInput.files.length > 0){
+      progressDiv.style.display = 'block';
+      progressDiv.classList.remove("fade-out");
+      bar.style.width = '0%';
+      bar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+      label.textContent = "Uploading...";
+      label.classList.remove("completed");
+
+      let progress = 0;
+      const interval = setInterval(()=>{
+        progress += 10;
+        bar.style.width = progress + '%';
+        if(progress >= 100){
+          clearInterval(interval);
+          // أخفي الزر
+          label.style.display = "none";
+          // أخفي شريط التقدم
+          progressDiv.style.display = "none";
+          // أظهر أيقونة 📄 كرابط للملف
+          const file = fileInput.files[0];
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.textContent = "📄";
+          link.style.textDecoration = "none";
+          link.style.marginLeft = "4px";
+          label.parentNode.appendChild(link);
+        }
+      },100);
+    }
+  });
+}
+
+render();
+    ['INV_No','INV_Date','POs_No','Hospital_Name','Value'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('INV_Type').value='';
+    document.getElementById('Attachment').value='';
+
+    // reset attach button + progress bar
+    const attachLabel = document.querySelector('label[for="Attachment"]');
+    if(attachLabel){
+      attachLabel.textContent = "Attach";
+      attachLabel.classList.remove("completed");
+    }
+    const uploadBar = document.getElementById("uploadBar");
+    const uploadProgress = document.getElementById("uploadProgress");
+    if(uploadBar) uploadBar.style.width = "0%";
+    if(uploadProgress) uploadProgress.style.display = "none";
+  });
+    
+
+  function removeRow(id){
+    if(!confirm('Delete this invoice?')) return;
+    rows = rows.filter(r=>r.id!==id);
+    save(); 
+// attach file upload progress for edit mode
+function bindEditFileUpload(id){
+  const fileInput = document.getElementById(`e_Documents_${id}`);
+  const label = document.getElementById(`label_doc_${id}`);
+  const progressDiv = document.getElementById(`progress_${id}`);
+  const bar = document.getElementById(`bar_${id}`);
+  if(!fileInput || !label || !progressDiv || !bar) return;
+  
+  fileInput.addEventListener('change', ()=>{
+    if(fileInput.files.length > 0){
+      progressDiv.style.display = 'block';
+      progressDiv.classList.remove("fade-out");
+      bar.style.width = '0%';
+      bar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+      label.textContent = "Uploading...";
+      label.classList.remove("completed");
+
+      let progress = 0;
+      const interval = setInterval(()=>{
+        progress += 10;
+        bar.style.width = progress + '%';
+        if(progress >= 100){
+          clearInterval(interval);
+          // أخفي الزر
+          label.style.display = "none";
+          // أخفي شريط التقدم
+          progressDiv.style.display = "none";
+          // أظهر أيقونة 📄 كرابط للملف
+          const file = fileInput.files[0];
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.textContent = "📄";
+          link.style.textDecoration = "none";
+          link.style.marginLeft = "4px";
+          label.parentNode.appendChild(link);
+        }
+      },100);
+    }
+  });
+}
+
+render();
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', ()=>{
+    const list = getFiltered();
+    const headers = ["No.","INV No.","INV Date","POs No.","INV Type","Hospital Name","Value","Status","Request No.","Comments","Documents"];
+    const csvRows = [headers.join(',')];
+    list.forEach((r,idx)=>{
+      const vals = [
+        idx+1, safe(r.INV_No), safe(r.INV_Date), safe(r.POs_No), safe(r.INV_Type),
+        safe(r.Hospital_Name), r.Value!=null ? r.Value : '',
+        safe(r.Status), safe(r.Request_No), safe(r.Comments), safe(r.Documents)
+      ].map(csvEscape);
+      csvRows.push(vals.join(','));
+    });
+    const blob = new Blob([csvRows.join('\n')], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'invoices.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  function safe(v){ return v==null ? '' : String(v); }
+  function csvEscape(s){
+    if (/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
+    return s;
+  }
+
+  window.removeRow = removeRow;
+  window.startEdit = startEdit;
+  window.cancelEdit = cancelEdit;
+  window.saveEdit = saveEdit;
+
+  
+// attach file upload progress for edit mode
+function bindEditFileUpload(id){
+  const fileInput = document.getElementById(`e_Documents_${id}`);
+  const label = document.getElementById(`label_doc_${id}`);
+  const progressDiv = document.getElementById(`progress_${id}`);
+  const bar = document.getElementById(`bar_${id}`);
+  if(!fileInput || !label || !progressDiv || !bar) return;
+  
+  fileInput.addEventListener('change', ()=>{
+    if(fileInput.files.length > 0){
+      progressDiv.style.display = 'block';
+      progressDiv.classList.remove("fade-out");
+      bar.style.width = '0%';
+      bar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+      label.textContent = "Uploading...";
+      label.classList.remove("completed");
+
+      let progress = 0;
+      const interval = setInterval(()=>{
+        progress += 10;
+        bar.style.width = progress + '%';
+        if(progress >= 100){
+          clearInterval(interval);
+          // أخفي الزر
+          label.style.display = "none";
+          // أخفي شريط التقدم
+          progressDiv.style.display = "none";
+          // أظهر أيقونة 📄 كرابط للملف
+          const file = fileInput.files[0];
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = file.name;
+          link.textContent = "📄";
+          link.style.textDecoration = "none";
+          link.style.marginLeft = "4px";
+          label.parentNode.appendChild(link);
+        }
+      },100);
+    }
+  });
+}
+
+render();
+
+function filterTable(keyword) {
+  const rows = document.querySelectorAll("#invoiceTable tbody tr");
+  rows.forEach(row => {
+    if (row.textContent.toLowerCase().includes(keyword.toLowerCase())) {
+      row.classList.remove("fade-out");
+      row.classList.add("fade-in");
+    } else {
+      row.classList.remove("fade-in");
+      row.classList.add("fade-out");
+    }
+  });
+}
+
+
+
+
+
+const attachmentInput = document.getElementById('Attachment');
+const attachLabel = document.querySelector('label[for="Attachment"]');
+const uploadProgress = document.getElementById('uploadProgress');
+const uploadBar = document.getElementById('uploadBar');
+
+attachmentInput.addEventListener('change', () => {
+  if (attachmentInput.files.length > 0) {
+    uploadProgress.style.display = 'block';
+    uploadProgress.classList.remove("fade-out");
+    uploadBar.style.width = '0%';
+    uploadBar.style.background = "linear-gradient(90deg,#3b82f6,#2563eb)";
+    attachLabel.textContent = "Uploading...";
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      uploadBar.style.width = progress + '%';
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        attachLabel.textContent = "✔ File Uploaded";
+        attachLabel.classList.add("completed"); // يضيف اللون الأخضر
+        uploadBar.style.background = "#16a34a"; // أخضر عند الاكتمال
+        setTimeout(() => {
+          uploadProgress.classList.add("fade-out");
+        }, 800);
+      }
+    }, 100);
+  }
+});
+
+// زر الطباعة (🖨) مع حدود مخصصة للأول والأخير
+document.getElementById('printBtn').addEventListener('click', () => {
+  const table = document.getElementById('invoiceTable').cloneNode(true);
+
+  // حذف عمود Documents و Action
+  const headRow = table.querySelector('thead tr');
+  if (headRow) {
+    headRow.deleteCell(-1); // Action
+    headRow.deleteCell(-1); // Documents
+  }
+  table.querySelectorAll('tbody tr').forEach(row => {
+    if (row.cells.length > 2) {
+      row.deleteCell(-1); // Action
+      row.deleteCell(-1); // Documents
+    }
+  });
+
+  const style = `
+    <style>
+      body { font-family: Arial, sans-serif; color: #000; margin: 20px; }
+      .header-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .header-container img {
+        height: 70px;
+        margin-right: 20px;
+      }
+      .header-container h2 {
+        margin: 0;
+        flex: 1;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      table { border-collapse: collapse; width: 100%; font-size: 11px; }
+      th, td {
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 5px 6px;
+        text-align: center;
+      }
+      /* أول عمود (No.) بحد يسار */
+      th:first-child, td:first-child {
+        border-left: 2px solid #ddd;
+      }
+      /* آخر عمود (Comments) بحد يمين */
+      th:last-child, td:last-child {
+        border-right: 2px solid #ddd;
+      }
+      th {
+        background: #dbeafe;
+        color: #1e3a8a;
+        font-weight: bold;
+        font-size: 12px;
+      }
+      tr:nth-child(even) td { background: #f9f9f9; }
+      tr:nth-child(odd) td { background: #fff; }
+    
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 16px;
+}
+.header .logo {
+  height: 70px;
+}
+.header h1 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 24px;
+}
+
+
+  
+
+
+  .chip.completed {
+    background: #dbeafe; /* أزرق فاتح */
+    color: #2563eb;      /* أزرق */
+  }
+
+  .chip.paid {
+    background: #dcfce7; /* أخضر فاتح */
+    color: #16a34a;      /* أخضر */
+  }
+
+  .chip.pending {
+    background: #fef9c3; /* أصفر فاتح */
+    color: #dc2626;      /* أحمر */
+  }
+
+  .chip.rejected {
+    background: #fecaca; /* أحمر فاتح */
+    color: #000000;      /* أسود */
+  }
+
+</style>
+  `;
+
+  const win = window.open('', '', 'width=1100,height=800');
+  win.document.write(`<html><head><title>Print Invoices</title>${style}</head>
+    <body>
+      <div class="header-container">
+        <img src="img/logo.avif" alt="Logo">
+        <h2>Invoices Report</h2>
+      </div>
+      ${table.outerHTML}
+    </body></html>`);
+  win.document.close();
+  win.print();
+});
+
+
+// زر النسخ الاحتياطي
+document.getElementById("backupBtn").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(rows, null, 2)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "invoices_auto_backup.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+// زر الاستعادة
+document.getElementById("restoreInput").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(Array.isArray(data)){
+        rows = data;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+        render();
+        alert("✅ تم استعادة النسخة الاحتياطية بنجاح");
+      } else {
+        alert("❌ الملف غير صالح");
+      }
+    } catch(err){
+      alert("❌ خطأ في قراءة الملف");
+    }
+  };
+  reader.readAsText(file);
+});
+
+</script>
+</body>
+</html>
